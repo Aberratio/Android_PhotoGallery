@@ -19,10 +19,13 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
-    public static ArrayList<Photo> allPhotos = new ArrayList<>();
+    public static ArrayList<PhotoDetails> allPhotoDetails = new ArrayList<>();
+    public ArrayList<Integer> folderIndexKeeper = new ArrayList<>();
     boolean isFolder;
     GridView photoGridView;
     PhotoGalleryAdapter photoGalleryAdapter;
@@ -37,11 +40,15 @@ public class MainActivity extends Activity {
 
         photoGridView = findViewById(R.id.photo_grid_view);
 
+        //if clicked on folder
         photoGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getApplicationContext(), PhotosActivity.class);
-                intent.putExtra("value", i);
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String message = "You clicked on folder " + position;
+                Snackbar.make(adapterView, message, Snackbar.LENGTH_LONG)
+                        .show();
+                Intent intent = new Intent(getApplicationContext(), PhotoGalleryActivity.class);
+                intent.putExtra("value", position);
                 startActivity(intent);
             }
         });
@@ -59,6 +66,15 @@ public class MainActivity extends Activity {
         } else {
             findImages();
         }
+    }
+
+    public boolean isFolder(int indexToCheck) {
+        for(int i = 0; i < folderIndexKeeper.size(); i++) {
+            if(folderIndexKeeper.get(i) == indexToCheck) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -80,16 +96,15 @@ public class MainActivity extends Activity {
     @SuppressLint("Recycle")
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public void findImages() {
-        allPhotos.clear();
+        allPhotoDetails.clear();
 
-        int position = 0;
         Uri externalContentPath;
         Cursor cursor;
-        int photoIndex, folderIndex;
-
+        int photoIndex;
+        int folderIndex;
         String fullImagePath;
-        externalContentPath = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
+        externalContentPath = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         String[] imagesAndFoldersKeeper = {MediaStore.MediaColumns.DATA, MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
 
         final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
@@ -99,11 +114,12 @@ public class MainActivity extends Activity {
         photoIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
         folderIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
 
+        int position = 0;
         while (cursor.moveToNext()) {
             fullImagePath = cursor.getString(photoIndex);
 
-            for (int i = 0; i < allPhotos.size(); i++) {
-                if (allPhotos.get(i).getFolderPath().equals(cursor.getString(folderIndex))) {
+            for (int i = 0; i < allPhotoDetails.size(); i++) {
+                if (allPhotoDetails.get(i).getFolderName().equals(cursor.getString(folderIndex))) {
                     isFolder = true;
                     position = i;
                     break;
@@ -113,21 +129,22 @@ public class MainActivity extends Activity {
             }
 
             if (isFolder) {
-                ArrayList<String> allPhotoPathsInFolder = new ArrayList<>(allPhotos.get(position).getFullPhotoPath());
+                folderIndexKeeper.add(position);
+                ArrayList<String> allPhotoPathsInFolder = new ArrayList<>(allPhotoDetails.get(position).getAllPhotosInFolderPaths());
                 allPhotoPathsInFolder.add(fullImagePath);
-                allPhotos.get(position).setFullPhotoPath(allPhotoPathsInFolder);
+                allPhotoDetails.get(position).setAllPhotosInFolderPaths(allPhotoPathsInFolder);
             } else {
                 ArrayList<String> allPhotoPathsInFolder = new ArrayList<>();
                 allPhotoPathsInFolder.add(fullImagePath);
-                Photo newPhoto = new Photo();
-                newPhoto.setFolderPath(cursor.getString(folderIndex));
-                newPhoto.setFullPhotoPath(allPhotoPathsInFolder);
+                PhotoDetails newPhotoDetails = new PhotoDetails();
+                newPhotoDetails.setFolderName(cursor.getString(folderIndex));
+                newPhotoDetails.setAllPhotosInFolderPaths(allPhotoPathsInFolder);
 
-                allPhotos.add(newPhoto);
+                allPhotoDetails.add(newPhotoDetails);
             }
         }
 
-        photoGalleryAdapter = new PhotoGalleryAdapter(getApplicationContext(), allPhotos);
+        photoGalleryAdapter = new PhotoGalleryAdapter(getApplicationContext(), allPhotoDetails);
         photoGridView.setAdapter(photoGalleryAdapter);
     }
 

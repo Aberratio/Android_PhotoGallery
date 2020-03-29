@@ -5,19 +5,21 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import java.util.ArrayList;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import static android.view.LayoutInflater.*;
+import java.util.ArrayList;
 
-public class PhotoGalleryAdapter extends ArrayAdapter<PhotoDetails> {
+import static android.view.LayoutInflater.from;
+
+public class FullScreenAdapter extends ArrayAdapter<PhotoDetails> {
 
     private Context context;
     private ArrayList<PhotoDetails> allPhotosInFolder;
 
-    PhotoGalleryAdapter(Context context, ArrayList<PhotoDetails> allPhotosInFolder) {
-        super(context, R.layout.photo_gallery, allPhotosInFolder);
+    FullScreenAdapter(Context context, ArrayList<PhotoDetails> allPhotosInFolder) {
+        super(context, R.layout.full_screen, allPhotosInFolder);
         this.allPhotosInFolder = allPhotosInFolder;
         this.context = context;
     }
@@ -68,9 +70,9 @@ public class PhotoGalleryAdapter extends ArrayAdapter<PhotoDetails> {
         folderView.picturesInGalleryAmount.setText(allPhotosInFolder.get(position).getAllPhotosInFolderPaths().size()+"");
 
         Glide.with(context).load("file://" + allPhotosInFolder.get(position).getAllPhotosInFolderPaths().get(0))
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .skipMemoryCache(true)
-            .into(folderView.pictureView);
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(folderView.pictureView);
 
         return inflatedView;
     }
