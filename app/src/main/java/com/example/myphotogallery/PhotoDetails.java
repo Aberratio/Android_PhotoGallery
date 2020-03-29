@@ -2,7 +2,7 @@ package com.example.myphotogallery;
 
 import java.util.ArrayList;
 
-class PhotoDetails {
+public class PhotoDetails {
     private String folderName;
     private ArrayList<String> allPhotosInFolderPaths;
 

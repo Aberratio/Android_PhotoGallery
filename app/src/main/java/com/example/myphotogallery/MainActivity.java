@@ -49,6 +49,8 @@ public class MainActivity extends Activity {
                         .show();
                 Intent intent = new Intent(getApplicationContext(), PhotoGalleryActivity.class);
                 intent.putExtra("value", position);
+
+                //go into folder with images
                 startActivity(intent);
             }
         });
@@ -64,17 +66,8 @@ public class MainActivity extends Activity {
                                 WAITING_TIME);
                     }
         } else {
-            findImages();
+            loadImagesIntoGallery();
         }
-    }
-
-    public boolean isFolder(int indexToCheck) {
-        for(int i = 0; i < folderIndexKeeper.size(); i++) {
-            if(folderIndexKeeper.get(i) == indexToCheck) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -85,7 +78,7 @@ public class MainActivity extends Activity {
         if (requestCode == WAITING_TIME) {
             for (int grantResult : grantResults) {
                 if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                    findImages();
+                    loadImagesIntoGallery();
                 } else {
                     Toast.makeText(MainActivity.this, "No permissions!", Toast.LENGTH_LONG).show();
                 }
@@ -95,7 +88,7 @@ public class MainActivity extends Activity {
 
     @SuppressLint("Recycle")
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public void findImages() {
+    public void loadImagesIntoGallery() {
         allPhotoDetails.clear();
 
         Uri externalContentPath;
@@ -147,6 +140,5 @@ public class MainActivity extends Activity {
         photoGalleryAdapter = new PhotoGalleryAdapter(getApplicationContext(), allPhotoDetails);
         photoGridView.setAdapter(photoGalleryAdapter);
     }
-
 }
 

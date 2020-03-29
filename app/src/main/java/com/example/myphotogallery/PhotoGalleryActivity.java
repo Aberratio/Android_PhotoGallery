@@ -1,5 +1,6 @@
 package com.example.myphotogallery;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,27 +22,25 @@ public class PhotoGalleryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         GridView gridView = findViewById(R.id.photo_grid_view);
         position = getIntent().getIntExtra("value", 0);
+        final Context context = getApplicationContext();
 
-        //if clicked on folder
+        //if clicked on photo
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ArrayList<PhotoDetails> x = MainActivity.allPhotoDetails;
+                try {
+                    ArrayList<PhotoDetails> x = MainActivity.allPhotoDetails;
+                    Intent imageSlider = new Intent(context, ImageSliderAdapter.class);
+                    imageSlider.putExtra("position", position);
 
-                //ArrayList<String> y = x.get(position).getFullPhotoPath();
-//                String message = "You clicked on uri " + y.get(i);
-//
-//                Snackbar.make(adapterView, message, Snackbar.LENGTH_LONG)
-//                        .show();
+                    //go into slider activity
+                    startActivity(imageSlider);
+                } catch (Exception e) {
+                    String message = e.getMessage();
 
-                Intent fullScreen = new Intent(getApplicationContext(), FullScreenActivity.class);
-
-                String message = "file:/"  + MainActivity.allPhotoDetails.get(position).getAllPhotosInFolderPaths().get(i);
-                fullScreen.putExtra("position", message);
-                Snackbar.make(adapterView, message, Snackbar.LENGTH_LONG)
-                       .show();
-
-               startActivity(fullScreen);
+                    Snackbar.make(adapterView, message, Snackbar.LENGTH_LONG)
+                          .show();
+                }
             }
         });
 
