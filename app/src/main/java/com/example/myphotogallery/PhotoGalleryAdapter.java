@@ -14,17 +14,17 @@ import static android.view.LayoutInflater.*;
 public class PhotoGalleryAdapter extends ArrayAdapter<PhotoDetails> {
 
     private Context context;
-    private ArrayList<PhotoDetails> allPhotosInFolder;
+    private ArrayList<PhotoDetails> allFolders;
 
     PhotoGalleryAdapter(Context context, ArrayList<PhotoDetails> allPhotosInFolder) {
         super(context, R.layout.photo_gallery, allPhotosInFolder);
-        this.allPhotosInFolder = allPhotosInFolder;
+        this.allFolders = allPhotosInFolder;
         this.context = context;
     }
 
     @Override
     public int getCount() {
-        return allPhotosInFolder.size();
+        return allFolders.size();
     }
 
     @Override
@@ -34,8 +34,8 @@ public class PhotoGalleryAdapter extends ArrayAdapter<PhotoDetails> {
 
     @Override
     public int getViewTypeCount() {
-        if (allPhotosInFolder.size() > 0) {
-            return allPhotosInFolder.size();
+        if (allFolders.size() > 0) {
+            return allFolders.size();
         } else {
             return 1;
         }
@@ -64,10 +64,10 @@ public class PhotoGalleryAdapter extends ArrayAdapter<PhotoDetails> {
             folderView = (FolderView) inflatedView.getTag();
         }
 
-        folderView.galleryName.setText(allPhotosInFolder.get(position).getFolderName());
-        folderView.picturesInGalleryAmount.setText(allPhotosInFolder.get(position).getAllPhotosInFolderPaths().size()+"");
+        folderView.galleryName.setText(allFolders.get(position).getFolderName());
+        folderView.picturesInGalleryAmount.setText(allFolders.get(position).getAllPhotosInFolderPaths().size()+"");
 
-        Glide.with(context).load("file://" + allPhotosInFolder.get(position).getAllPhotosInFolderPaths().get(0))
+        Glide.with(context).load("file://" + allFolders.get(position).getAllPhotosInFolderPaths().get(0))
             .diskCacheStrategy(DiskCacheStrategy.NONE)
             .skipMemoryCache(true)
             .into(folderView.pictureView);

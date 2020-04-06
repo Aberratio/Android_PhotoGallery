@@ -30,8 +30,15 @@ public class PhotoGalleryActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 try {
                     ArrayList<PhotoDetails> x = MainActivity.allPhotoDetails;
-                    Intent imageSlider = new Intent(context, ImageSliderAdapter.class);
-                    imageSlider.putExtra("position", position);
+                    Intent imageSlider = new Intent(context, ImageSliderActivity.class);
+
+                    ArrayList<PhotoDetails> allPhotosInFolder = MainActivity.allPhotoDetails;
+                    String message = allPhotosInFolder.get(position).getAllPhotosInFolderPaths().get(i);
+//                    Snackbar.make(adapterView, message, Snackbar.LENGTH_LONG)
+//                          .show();
+
+                    imageSlider.putExtra("message", message);
+                    imageSlider.putExtra("position", i);
 
                     //go into slider activity
                     startActivity(imageSlider);

@@ -13,7 +13,8 @@
         android:longClickable="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:requestLegacyExternalStorage="true">
         <activity
             android:name=".ImageSliderActivity"
             android:label="@string/title_activity_image_slider"

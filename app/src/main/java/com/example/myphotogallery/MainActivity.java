@@ -123,9 +123,12 @@ public class MainActivity extends Activity {
 
             if (isFolder) {
                 folderIndexKeeper.add(position);
-                ArrayList<String> allPhotoPathsInFolder = new ArrayList<>(allPhotoDetails.get(position).getAllPhotosInFolderPaths());
-                allPhotoPathsInFolder.add(fullImagePath);
-                allPhotoDetails.get(position).setAllPhotosInFolderPaths(allPhotoPathsInFolder);
+                //TODO null pointer
+                if(!allPhotoDetails.isEmpty()){
+                    ArrayList<String> allPhotoPathsInFolder = new ArrayList<>(allPhotoDetails.get(position).getAllPhotosInFolderPaths());
+                    allPhotoPathsInFolder.add(fullImagePath);
+                    allPhotoDetails.get(position).setAllPhotosInFolderPaths(allPhotoPathsInFolder);
+                }
             } else {
                 ArrayList<String> allPhotoPathsInFolder = new ArrayList<>();
                 allPhotoPathsInFolder.add(fullImagePath);
